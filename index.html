@@ -9,7 +9,7 @@
 :root{
   --bg:#0b0f14;--surface:#141b24;--surface2:#1c2633;
   --border:rgba(255,255,255,.07);--text:#f0f4f8;--muted:#5a6a7e;
-  --accent:#f5a623;--green:#22c55e;--blue:#60a5fa;--amber:#fb923c;--red:#f87171;
+  --accent:#f5a623;--green:#22c55e;--blue:#60a5fa;--red:#f87171;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;touch-action:manipulation}
@@ -17,44 +17,42 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 .hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
 .brand{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
 .clock{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
-.hint{text-align:center;padding:8px;font-size:12px;color:var(--muted);flex-shrink:0}
-.grid-wrap{flex:1;overflow-y:auto;padding:12px 16px 20px;-webkit-overflow-scrolling:touch}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
-.emp-btn{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 8px;text-align:center;cursor:pointer;transition:border-color .12s,transform .1s;-webkit-tap-highlight-color:transparent}
+.hint{text-align:center;padding:8px;font-size:13px;color:var(--muted);flex-shrink:0}
+.grid-wrap{flex:1;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,42vw),1fr));gap:16px}
+.emp-btn{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:clamp(16px,4vw,32px) 12px;text-align:center;cursor:pointer;transition:border-color .12s,transform .1s}
 .emp-btn:active{transform:scale(.94);background:var(--surface2);border-color:rgba(245,166,35,.4)}
-.av{width:42px;height:42px;border-radius:50%;background:rgba(245,166,35,.1);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--accent);margin:0 auto 9px}
-.emp-name{font-size:11px;font-weight:500;line-height:1.3;word-break:break-word;text-transform:capitalize}
+.av{width:clamp(64px,14vw,100px);height:clamp(64px,14vw,100px);border-radius:50%;background:rgba(245,166,35,.1);display:flex;align-items:center;justify-content:center;font-size:clamp(20px,5vw,34px);font-weight:700;color:var(--accent);margin:0 auto 12px}
+.emp-name{font-size:clamp(13px,3vw,18px);font-weight:500;line-height:1.3;word-break:break-word;text-transform:capitalize}
 /* Overlay PIN */
-.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;-webkit-transition:opacity .2s}
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
 .overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--surface);border-radius:22px 22px 0 0;padding:24px 20px 44px;width:100%;max-width:360px;transform:translateY(100%);transition:transform .26s cubic-bezier(.32,.72,0,1);-webkit-transition:transform .26s cubic-bezier(.32,.72,0,1)}
+.modal{background:var(--surface);border-radius:22px 22px 0 0;padding:24px 20px 44px;width:100%;max-width:380px;transform:translateY(100%);transition:transform .26s cubic-bezier(.32,.72,0,1)}
 .overlay.open .modal{transform:translateY(0)}
-.m-name{font-size:20px;font-weight:700;text-align:center;text-transform:capitalize;margin-bottom:3px}
-.m-tipo{font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px;min-height:18px}
-.dots{display:flex;justify-content:center;gap:12px;margin-bottom:22px}
-.dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.15);transition:all .1s}
+.m-name{font-size:22px;font-weight:700;text-align:center;text-transform:capitalize;margin-bottom:4px}
+.m-tipo{font-size:13px;text-align:center;margin-bottom:20px;min-height:20px;font-weight:500}
+.dots{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.15);transition:all .1s}
 .dot.on{background:var(--accent);border-color:var(--accent)}
 .dot.err{background:var(--red);border-color:var(--red)}
-.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.nb{background:rgba(255,255,255,.07);border:none;border-radius:12px;padding:16px;font-size:22px;font-weight:600;color:var(--text);cursor:pointer;font-family:'Inter',sans-serif;transition:background .1s;width:100%}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nb{background:rgba(255,255,255,.07);border:none;border-radius:14px;padding:18px;font-size:24px;font-weight:600;color:var(--text);cursor:pointer;font-family:'Inter',sans-serif;transition:background .1s;width:100%}
 .nb:active{background:rgba(255,255,255,.15)}
-.nb.sm{font-size:13px;color:var(--muted)}
-/* Pantalla de confirmación — id renombrado a 'pantalla-ok' para evitar colisión con window.confirm */
+.nb.sm{font-size:14px;color:var(--muted)}
+/* Pantalla confirmación */
 #pantalla-ok{
-  position:fixed;top:0;left:0;right:0;bottom:0;
-  z-index:500;
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;
   background:#0b0f14;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  opacity:0;pointer-events:none;
-  transition:opacity .25s;-webkit-transition:opacity .25s;
+  opacity:0;pointer-events:none;transition:opacity .25s;
 }
 #pantalla-ok.visible{opacity:1;pointer-events:all}
-.ok-icono{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:8px}
-.ok-tipo{font-size:42px;font-weight:800;letter-spacing:.02em;line-height:1.1;text-align:center}
-.ok-nombre{font-size:18px;font-weight:600;text-transform:capitalize;margin-top:4px;text-align:center}
-.ok-hora{font-size:44px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:10px}
-.ok-fecha{font-size:13px;color:var(--muted);text-align:center}
-.ok-extra{font-size:13px;margin-top:16px;padding:8px 18px;border-radius:99px;background:rgba(251,146,60,.12);color:var(--amber);text-align:center}
+.ok-icono{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:10px}
+.ok-tipo{font-size:48px;font-weight:800;letter-spacing:.02em;line-height:1.1;text-align:center}
+.ok-nombre{font-size:20px;font-weight:600;text-transform:capitalize;margin-top:6px;text-align:center}
+.ok-hora{font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:12px}
+.ok-fecha{font-size:14px;color:var(--muted);text-align:center;margin-top:4px}
+.ok-num{font-size:13px;color:var(--muted);margin-top:8px}
 /* Loader */
 .loader{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:400;gap:12px}
 .spin{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
@@ -84,7 +82,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 <div class="overlay" id="overlay" onclick="if(event.target===this)cerrar()">
   <div class="modal">
     <div class="m-name" id="m-name"></div>
-    <div class="m-tipo" id="m-tipo">Ingresa tu PIN de 4 dígitos</div>
+    <div class="m-tipo" id="m-tipo"></div>
     <div class="dots" id="dots">
       <div class="dot" id="d0"></div><div class="dot" id="d1"></div>
       <div class="dot" id="d2"></div><div class="dot" id="d3"></div>
@@ -106,14 +104,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </div>
 </div>
 
-<!-- Pantalla de confirmación -->
+<!-- Pantalla confirmación -->
 <div id="pantalla-ok">
   <div class="ok-icono" id="ok-icono"></div>
   <div class="ok-tipo"  id="ok-tipo"></div>
   <div class="ok-nombre" id="ok-nombre"></div>
   <div class="ok-hora"  id="ok-hora"></div>
   <div class="ok-fecha" id="ok-fecha"></div>
-  <div class="ok-extra" id="ok-extra" style="display:none"></div>
+  <div class="ok-num"   id="ok-num"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -130,15 +128,6 @@ let empleados = [];
 let selEmp    = null;
 let pin       = '';
 
-const TIPOS = {
-  entrada:          { label:'ENTRADA',           color:'#22c55e', icono:'→' },
-  salida_desayuno:  { label:'SALIDA DESAYUNO',   color:'#60a5fa', icono:'☕' },
-  regreso_desayuno: { label:'REGRESO DESAYUNO',  color:'#fb923c', icono:'←' },
-  salida_comida:    { label:'SALIDA COMIDA',     color:'#60a5fa', icono:'🍽' },
-  regreso_comida:   { label:'REGRESO COMIDA',    color:'#fb923c', icono:'←' },
-  salida_jornada:   { label:'SALIDA',            color:'#94a3b8', icono:'✓' },
-};
-
 // Reloj
 function tick() {
   const n = new Date();
@@ -150,39 +139,12 @@ function tick() {
 setInterval(tick, 1000);
 tick();
 
-// Fecha/hora en México
 function getMXDate() {
   return new Date(new Date().toLocaleString('en-US', {timeZone:TZ}));
 }
 function fechaMX() {
   return new Date().toLocaleDateString('sv-SE', {timeZone:TZ});
 }
-
-// Determinar tipo de checada por hora del día
-function getTipo(mxDate) {
-  const esSab = mxDate.getDay() === 6;
-  const mins  = mxDate.getHours() * 60 + mxDate.getMinutes();
-  if (mins < 510) return 'entrada';           // antes 08:30
-  if (mins < 615) return 'salida_desayuno';   // 08:30–10:14
-  if (esSab)      return mins < 765 ? 'regreso_desayuno' : 'salida_jornada';
-  if (mins < 765) return 'regreso_desayuno';  // 10:15–12:44
-  if (mins < 920) return 'salida_comida';     // 12:45–15:19
-  if (mins < 980) return 'regreso_comida';    // 15:20–16:19
-  return 'salida_jornada';                    // 16:20+
-}
-
-// Detectar horas extra
-function getHorasExtra(mxDate) {
-  const esSab = mxDate.getDay() === 6;
-  const base  = esSab ? 900 : 1020;
-  const mins  = mxDate.getHours() * 60 + mxDate.getMinutes();
-  const diff  = mins - base;
-  if (diff >= 120) return 2;
-  if (diff >= 60)  return 1;
-  return 0;
-}
-
-// Utilidades
 function initials(n) {
   return (n||'').trim().split(' ').map(w=>w[0]||'').slice(0,2).join('').toUpperCase();
 }
@@ -206,7 +168,7 @@ async function cargar() {
       </div>`).join('');
   } catch(e) {
     document.getElementById('grid').innerHTML =
-      '<p style="color:#f87171;text-align:center;padding:24px;grid-column:1/-1">Error al cargar empleados. Verifica la conexión.</p>';
+      '<p style="color:#f87171;text-align:center;padding:24px;grid-column:1/-1">Error al cargar. Verifica la conexión.</p>';
   }
   document.getElementById('loader').style.display = 'none';
 }
@@ -217,10 +179,19 @@ function seleccionar(id) {
   if (!selEmp) return;
   pin = '';
   document.getElementById('m-name').textContent = capName(selEmp.nombre);
-  const tipo = getTipo(getMXDate());
-  document.getElementById('m-tipo').textContent = 'Registrará: ' + (TIPOS[tipo]?.label || tipo);
+  document.getElementById('m-tipo').textContent = 'Ingresa tu PIN';
+  document.getElementById('m-tipo').style.color = 'var(--muted)';
   actualizarDots();
   document.getElementById('overlay').classList.add('open');
+  // Precargar próximo tipo mientras el empleado ingresa PIN
+  proximoTipo(selEmp.id).then(t => {
+    if (document.getElementById('overlay').classList.contains('open')) {
+      document.getElementById('m-tipo').textContent =
+        'Registrará: ' + (t === 'entrada' ? 'ENTRADA' : 'SALIDA');
+      document.getElementById('m-tipo').style.color =
+        t === 'entrada' ? 'var(--green)' : 'var(--blue)';
+    }
+  });
 }
 
 function cerrar() {
@@ -252,8 +223,7 @@ async function validar() {
     document.getElementById('dots').classList.add('shake');
     setTimeout(() => {
       document.getElementById('dots').classList.remove('shake');
-      pin = '';
-      actualizarDots();
+      pin = ''; actualizarDots();
     }, 450);
     return;
   }
@@ -262,10 +232,22 @@ async function validar() {
   await registrar(empToRegister);
 }
 
-async function registrar(emp) {
-  const mxNow = getMXDate();
+// ── Lógica simple: alternar entrada/salida ────────────────────
+async function proximoTipo(empId) {
   const fecha = fechaMX();
-  const tipo  = getTipo(mxNow);
+  const {data} = await db.from('checadas')
+    .select('id')
+    .eq('empleado_id', empId)
+    .eq('fecha', fecha)
+    .order('timestamp', {ascending: true});
+  const count = (data||[]).length;
+  // Par = entrada, Impar = salida
+  return count % 2 === 0 ? 'entrada' : 'salida';
+}
+
+async function registrar(emp) {
+  const fecha = fechaMX();
+  const mxNow = getMXDate();
 
   try {
     // Verificar doble checada en menos de 2 minutos
@@ -273,69 +255,54 @@ async function registrar(emp) {
       .select('timestamp')
       .eq('empleado_id', emp.id)
       .eq('fecha', fecha)
-      .order('timestamp', {ascending:false})
+      .order('timestamp', {ascending: false})
       .limit(1);
 
     if (reciente?.length) {
       const diffMin = (new Date() - new Date(reciente[0].timestamp)) / 60000;
       if (diffMin < 2) {
-        mostrarMensaje('ESPERA', 'Ya checaste hace menos de 2 minutos', '', '#f87171', '⏱');
+        mostrarMensaje('ESPERA', 'Ya checaste hace menos de 2 minutos',
+          '', '#fb923c', '⏱');
         return;
       }
     }
 
-    // Verificar si ese tipo ya fue registrado hoy
-    const {data: existe} = await db.from('checadas')
+    // Contar checadas de hoy para determinar tipo
+    const {data: hoy} = await db.from('checadas')
       .select('id')
       .eq('empleado_id', emp.id)
-      .eq('fecha', fecha)
-      .eq('tipo', tipo)
-      .limit(1);
+      .eq('fecha', fecha);
 
-    if (existe?.length) {
-      mostrarMensaje('YA REGISTRADO',
-        TIPOS[tipo]?.label + ' ya fue registrado hoy',
-        '', '#fb923c', '⚠');
-      return;
-    }
+    const count  = (hoy||[]).length;
+    const tipo   = count % 2 === 0 ? 'entrada' : 'salida';
+    const numReg = count + 1;
 
-    // Insertar checada
-    const {error: insError} = await db.from('checadas').insert({
+    // Insertar
+    const {error} = await db.from('checadas').insert({
       empleado_id: emp.id,
       tipo,
       fecha,
       timestamp: new Date().toISOString()
     });
-    if (insError) throw insError;
+    if (error) throw error;
 
-    // Detectar horas extra
-    let horasExtra = 0;
-    if (tipo === 'salida_jornada') {
-      horasExtra = getHorasExtra(mxNow);
-      if (horasExtra > 0) {
-        await db.from('horas_extra').insert({
-          empleado_id: emp.id,
-          fecha,
-          horas: horasExtra,
-          timestamp_salida: new Date().toISOString(),
-          estado: 'pendiente'
-        });
-      }
-    }
-
-    // Mostrar confirmación exitosa
-    const info = TIPOS[tipo];
-    const hora = mxNow.toLocaleTimeString('es-MX',
+    // Mostrar confirmación
+    const color = tipo === 'entrada' ? '#22c55e' : '#60a5fa';
+    const icono = tipo === 'entrada' ? '→' : '←';
+    const hora  = mxNow.toLocaleTimeString('es-MX',
       {hour:'2-digit', minute:'2-digit', hour12:false});
     const fechaStr = mxNow.toLocaleDateString('es-MX',
       {weekday:'long', day:'numeric', month:'long'});
-    const extraMsg = horasExtra > 0
-      ? horasExtra + ' hora' + (horasExtra>1?'s':'') + ' extra detectada' + (horasExtra>1?'s':'') + ' · Pendiente autorización'
-      : '';
-    mostrarMensaje(info.label, capName(emp.nombre), hora, info.color, info.icono, fechaStr, extraMsg);
+
+    mostrarMensaje(
+      tipo.toUpperCase(),
+      capName(emp.nombre),
+      hora, color, icono,
+      fechaStr,
+      'Registro ' + numReg + ' del día'
+    );
 
   } catch(e) {
-    console.error('Checador error:', e);
     const msg = e?.message || e?.details || JSON.stringify(e) || 'Error desconocido';
     mostrarMensaje('ERROR', msg, '', '#f87171', '✗');
   }
@@ -343,28 +310,17 @@ async function registrar(emp) {
 
 function mostrarMensaje(tipo, nombre, hora, color, icono, fecha, extra) {
   const p = document.getElementById('pantalla-ok');
-
-  document.getElementById('ok-icono').textContent = icono || '✓';
+  document.getElementById('ok-icono').textContent   = icono || '✓';
   document.getElementById('ok-icono').style.background = color + '22';
-  document.getElementById('ok-icono').style.color = color;
-
-  document.getElementById('ok-tipo').textContent  = tipo;
-  document.getElementById('ok-tipo').style.color  = color;
-
-  document.getElementById('ok-nombre').textContent = nombre || '';
-  document.getElementById('ok-hora').textContent   = hora || '';
-  document.getElementById('ok-hora').style.color   = color;
-  document.getElementById('ok-fecha').textContent  = fecha
+  document.getElementById('ok-icono').style.color   = color;
+  document.getElementById('ok-tipo').textContent    = tipo;
+  document.getElementById('ok-tipo').style.color    = color;
+  document.getElementById('ok-nombre').textContent  = nombre || '';
+  document.getElementById('ok-hora').textContent    = hora || '';
+  document.getElementById('ok-hora').style.color    = color;
+  document.getElementById('ok-fecha').textContent   = fecha
     ? fecha.charAt(0).toUpperCase() + fecha.slice(1) : '';
-
-  const exEl = document.getElementById('ok-extra');
-  if (extra) {
-    exEl.textContent    = '🕐 ' + extra;
-    exEl.style.display  = '';
-  } else {
-    exEl.style.display = 'none';
-  }
-
+  document.getElementById('ok-num').textContent     = extra || '';
   p.classList.add('visible');
   setTimeout(() => p.classList.remove('visible'), 3500);
 }
