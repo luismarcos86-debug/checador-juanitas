@@ -3,11 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0b0f14">
-<link rel="manifest" href="manifest.json">
 <title>Checador · Juanitas y Mazacun</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -331,6 +326,23 @@ function mostrarMensaje(tipo, nombre, hora, color, icono, fecha, extra) {
 }
 
 cargar();
+
+// Forzar pantalla completa al tocar la pantalla
+document.addEventListener('click', function() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+}, {once: false});
+
+// Intentar pantalla completa al cargar
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  }, 500);
+});
 </script>
 </body>
 </html>
