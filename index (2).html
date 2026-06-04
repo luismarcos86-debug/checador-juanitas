@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Checador · Juanitas y Mazacun</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f14;--surface:#141b24;--surface2:#1c2633;
+  --border:rgba(255,255,255,.07);--text:#f0f4f8;--muted:#5a6a7e;
+  --accent:#f5a623;--green:#22c55e;--blue:#60a5fa;--red:#f87171;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;touch-action:manipulation}
+#app{display:flex;flex-direction:column;height:100vh}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.brand{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.clock{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.hint{text-align:center;padding:8px;font-size:13px;color:var(--muted);flex-shrink:0}
+.grid-wrap{flex:1;overflow-y:auto;padding:16px 20px 24px;-webkit-overflow-scrolling:touch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,42vw),1fr));gap:16px}
+.emp-btn{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:clamp(16px,4vw,32px) 12px;text-align:center;cursor:pointer;transition:border-color .12s,transform .1s}
+.emp-btn:active{transform:scale(.94);background:var(--surface2);border-color:rgba(245,166,35,.4)}
+.av{width:clamp(64px,14vw,100px);height:clamp(64px,14vw,100px);border-radius:50%;background:rgba(245,166,35,.1);display:flex;align-items:center;justify-content:center;font-size:clamp(20px,5vw,34px);font-weight:700;color:var(--accent);margin:0 auto 12px}
+.emp-name{font-size:clamp(13px,3vw,18px);font-weight:500;line-height:1.3;word-break:break-word;text-transform:capitalize}
+/* Overlay PIN */
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border-radius:22px 22px 0 0;padding:24px 20px 44px;width:100%;max-width:380px;transform:translateY(100%);transition:transform .26s cubic-bezier(.32,.72,0,1)}
+.overlay.open .modal{transform:translateY(0)}
+.m-name{font-size:22px;font-weight:700;text-align:center;text-transform:capitalize;margin-bottom:4px}
+.m-tipo{font-size:13px;text-align:center;margin-bottom:20px;min-height:20px;font-weight:500}
+.dots{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.15);transition:all .1s}
+.dot.on{background:var(--accent);border-color:var(--accent)}
+.dot.err{background:var(--red);border-color:var(--red)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nb{background:rgba(255,255,255,.07);border:none;border-radius:14px;padding:18px;font-size:24px;font-weight:600;color:var(--text);cursor:pointer;font-family:'Inter',sans-serif;transition:background .1s;width:100%}
+.nb:active{background:rgba(255,255,255,.15)}
+.nb.sm{font-size:14px;color:var(--muted)}
+/* Pantalla confirmación */
+#pantalla-ok{
+  position:fixed;top:0;left:0;right:0;bottom:0;z-index:500;
+  background:#0b0f14;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+#pantalla-ok.visible{opacity:1;pointer-events:all}
+.ok-icono{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:10px}
+.ok-tipo{font-size:48px;font-weight:800;letter-spacing:.02em;line-height:1.1;text-align:center}
+.ok-nombre{font-size:20px;font-weight:600;text-transform:capitalize;margin-top:6px;text-align:center}
+.ok-hora{font-size:48px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:12px}
+.ok-fecha{font-size:14px;color:var(--muted);text-align:center;margin-top:4px}
+.ok-num{font-size:13px;color:var(--muted);margin-top:8px}
+/* Loader */
+.loader{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:400;gap:12px}
+.spin{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+.shake{animation:shake .38s ease}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="spin"></div>
+  <p style="color:var(--muted);font-size:12px">Cargando empleados…</p>
+</div>
+
+<div id="app">
+  <div class="hdr">
+    <div class="brand">Juanitas y Mazacun</div>
+    <div class="clock" id="clock">--:--:--</div>
+    <div style="font-size:11px;color:var(--muted);text-align:right" id="fecha-hdr"></div>
+  </div>
+  <div class="hint">Toca tu nombre para registrar entrada o salida</div>
+  <div class="grid-wrap"><div class="grid" id="grid"></div></div>
+</div>
+
+<!-- Modal PIN -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)cerrar()">
+  <div class="modal">
+    <div class="m-name" id="m-name"></div>
+    <div class="m-tipo" id="m-tipo"></div>
+    <div class="dots" id="dots">
+      <div class="dot" id="d0"></div><div class="dot" id="d1"></div>
+      <div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+    </div>
+    <div class="pad">
+      <button class="nb" onclick="num('1')">1</button>
+      <button class="nb" onclick="num('2')">2</button>
+      <button class="nb" onclick="num('3')">3</button>
+      <button class="nb" onclick="num('4')">4</button>
+      <button class="nb" onclick="num('5')">5</button>
+      <button class="nb" onclick="num('6')">6</button>
+      <button class="nb" onclick="num('7')">7</button>
+      <button class="nb" onclick="num('8')">8</button>
+      <button class="nb" onclick="num('9')">9</button>
+      <button class="nb sm" onclick="cerrar()">Cancelar</button>
+      <button class="nb" onclick="num('0')">0</button>
+      <button class="nb sm" onclick="borrar()">⌫</button>
+    </div>
+  </div>
+</div>
+
+<!-- Pantalla confirmación -->
+<div id="pantalla-ok">
+  <div class="ok-icono" id="ok-icono"></div>
+  <div class="ok-tipo"  id="ok-tipo"></div>
+  <div class="ok-nombre" id="ok-nombre"></div>
+  <div class="ok-hora"  id="ok-hora"></div>
+  <div class="ok-fecha" id="ok-fecha"></div>
+  <div class="ok-num"   id="ok-num"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ── CONFIGURACIÓN ─────────────────────────────────────────────
+const URL_SB = 'https://gkzjmghzkowfmhjbztal.supabase.co';
+const KEY_SB = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdremptZ2h6a293Zm1oamJ6dGFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NjY2NjUsImV4cCI6MjA5MTI0MjY2NX0.VIebZTpIstHRAsOWSi7negBRlATC8cju4F-A1UmM9No';
+// ─────────────────────────────────────────────────────────────
+
+const TZ = 'America/Mexico_City';
+const db = supabase.createClient(URL_SB, KEY_SB);
+
+let empleados = [];
+let selEmp    = null;
+let pin       = '';
+
+// Reloj
+function tick() {
+  const n = new Date();
+  document.getElementById('clock').textContent =
+    n.toLocaleTimeString('es-MX', {timeZone:TZ, hour12:false});
+  document.getElementById('fecha-hdr').textContent =
+    n.toLocaleDateString('es-MX', {timeZone:TZ, weekday:'long', day:'numeric', month:'long'});
+}
+setInterval(tick, 1000);
+tick();
+
+function getMXDate() {
+  return new Date(new Date().toLocaleString('en-US', {timeZone:TZ}));
+}
+function fechaMX() {
+  return new Date().toLocaleDateString('sv-SE', {timeZone:TZ});
+}
+function initials(n) {
+  return (n||'').trim().split(' ').map(w=>w[0]||'').slice(0,2).join('').toUpperCase();
+}
+function capName(n) {
+  return (n||'').trim().split(' ')
+    .map(w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()).join(' ');
+}
+
+// Cargar empleados
+async function cargar() {
+  try {
+    const {data, error} = await db.from('empleados')
+      .select('id,nombre,pin_checador,activo_checador')
+      .order('nombre');
+    if (error) throw error;
+    empleados = (data||[]).filter(e => e.activo_checador !== false && e.nombre?.trim());
+    document.getElementById('grid').innerHTML = empleados.map(e => `
+      <div class="emp-btn" onclick="seleccionar('${e.id}')">
+        <div class="av">${initials(e.nombre)}</div>
+        <div class="emp-name">${capName(e.nombre)}</div>
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('grid').innerHTML =
+      '<p style="color:#f87171;text-align:center;padding:24px;grid-column:1/-1">Error al cargar. Verifica la conexión.</p>';
+  }
+  document.getElementById('loader').style.display = 'none';
+}
+
+// Flujo PIN
+function seleccionar(id) {
+  selEmp = empleados.find(e => e.id === id);
+  if (!selEmp) return;
+  pin = '';
+  document.getElementById('m-name').textContent = capName(selEmp.nombre);
+  document.getElementById('m-tipo').textContent = 'Ingresa tu PIN';
+  document.getElementById('m-tipo').style.color = 'var(--muted)';
+  actualizarDots();
+  document.getElementById('overlay').classList.add('open');
+  // Precargar próximo tipo mientras el empleado ingresa PIN
+  proximoTipo(selEmp.id).then(t => {
+    if (document.getElementById('overlay').classList.contains('open')) {
+      document.getElementById('m-tipo').textContent =
+        'Registrará: ' + (t === 'entrada' ? 'ENTRADA' : 'SALIDA');
+      document.getElementById('m-tipo').style.color =
+        t === 'entrada' ? 'var(--green)' : 'var(--blue)';
+    }
+  });
+}
+
+function cerrar() {
+  document.getElementById('overlay').classList.remove('open');
+  selEmp = null; pin = '';
+}
+
+function num(d) {
+  if (pin.length >= 4) return;
+  pin += d;
+  actualizarDots();
+  if (pin.length === 4) setTimeout(validar, 180);
+}
+
+function borrar() { pin = pin.slice(0, -1); actualizarDots(); }
+
+function actualizarDots(err = false) {
+  for (let i = 0; i < 4; i++) {
+    const d = document.getElementById('d' + i);
+    d.className = 'dot' + (i < pin.length ? (err ? ' err' : ' on') : '');
+  }
+}
+
+async function validar() {
+  if (!selEmp) return;
+  const stored = selEmp.pin_checador || '0000';
+  if (pin !== stored) {
+    actualizarDots(true);
+    document.getElementById('dots').classList.add('shake');
+    setTimeout(() => {
+      document.getElementById('dots').classList.remove('shake');
+      pin = ''; actualizarDots();
+    }, 450);
+    return;
+  }
+  const empToRegister = selEmp;
+  cerrar();
+  await registrar(empToRegister);
+}
+
+// ── Lógica simple: alternar entrada/salida ────────────────────
+async function proximoTipo(empId) {
+  const fecha = fechaMX();
+  const {data} = await db.from('checadas')
+    .select('id')
+    .eq('empleado_id', empId)
+    .eq('fecha', fecha)
+    .order('timestamp', {ascending: true});
+  const count = (data||[]).length;
+  // Par = entrada, Impar = salida
+  return count % 2 === 0 ? 'entrada' : 'salida';
+}
+
+async function registrar(emp) {
+  const fecha = fechaMX();
+  const mxNow = getMXDate();
+
+  try {
+    // Verificar doble checada en menos de 2 minutos
+    const {data: reciente} = await db.from('checadas')
+      .select('timestamp')
+      .eq('empleado_id', emp.id)
+      .eq('fecha', fecha)
+      .order('timestamp', {ascending: false})
+      .limit(1);
+
+    if (reciente?.length) {
+      const diffMin = (new Date() - new Date(reciente[0].timestamp)) / 60000;
+      if (diffMin < 2) {
+        mostrarMensaje('ESPERA', 'Ya checaste hace menos de 2 minutos',
+          '', '#fb923c', '⏱');
+        return;
+      }
+    }
+
+    // Contar checadas de hoy para determinar tipo
+    const {data: hoy} = await db.from('checadas')
+      .select('id')
+      .eq('empleado_id', emp.id)
+      .eq('fecha', fecha);
+
+    const count  = (hoy||[]).length;
+    const tipo   = count % 2 === 0 ? 'entrada' : 'salida';
+    const numReg = count + 1;
+
+    // Insertar
+    const {error} = await db.from('checadas').insert({
+      empleado_id: emp.id,
+      tipo,
+      fecha,
+      timestamp: new Date().toISOString()
+    });
+    if (error) throw error;
+
+    // Mostrar confirmación
+    const color = tipo === 'entrada' ? '#22c55e' : '#60a5fa';
+    const icono = tipo === 'entrada' ? '→' : '←';
+    const hora  = mxNow.toLocaleTimeString('es-MX',
+      {hour:'2-digit', minute:'2-digit', hour12:false});
+    const fechaStr = mxNow.toLocaleDateString('es-MX',
+      {weekday:'long', day:'numeric', month:'long'});
+
+    mostrarMensaje(
+      tipo.toUpperCase(),
+      capName(emp.nombre),
+      hora, color, icono,
+      fechaStr,
+      'Registro ' + numReg + ' del día'
+    );
+
+  } catch(e) {
+    const msg = e?.message || e?.details || JSON.stringify(e) || 'Error desconocido';
+    mostrarMensaje('ERROR', msg, '', '#f87171', '✗');
+  }
+}
+
+function mostrarMensaje(tipo, nombre, hora, color, icono, fecha, extra) {
+  const p = document.getElementById('pantalla-ok');
+  document.getElementById('ok-icono').textContent   = icono || '✓';
+  document.getElementById('ok-icono').style.background = color + '22';
+  document.getElementById('ok-icono').style.color   = color;
+  document.getElementById('ok-tipo').textContent    = tipo;
+  document.getElementById('ok-tipo').style.color    = color;
+  document.getElementById('ok-nombre').textContent  = nombre || '';
+  document.getElementById('ok-hora').textContent    = hora || '';
+  document.getElementById('ok-hora').style.color    = color;
+  document.getElementById('ok-fecha').textContent   = fecha
+    ? fecha.charAt(0).toUpperCase() + fecha.slice(1) : '';
+  document.getElementById('ok-num').textContent     = extra || '';
+  p.classList.add('visible');
+  setTimeout(() => p.classList.remove('visible'), 3500);
+}
+
+cargar();
+
+// Forzar pantalla completa al tocar la pantalla
+document.addEventListener('click', function() {
+  const el = document.documentElement;
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  else if (el.mozRequestFullScreen) el.mozRequestFullScreen();
+}, {once: false});
+
+// Intentar pantalla completa al cargar
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  }, 500);
+});
+</script>
+</body>
+</html>
